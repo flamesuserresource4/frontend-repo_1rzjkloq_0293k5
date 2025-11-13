@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
 import { artworks } from '../data/artworks'
 import { useLang } from './LanguageContext'
+import ImgWithFallback from './ImgWithFallback'
 
 export default function WorkModal({ openId, onClose }) {
   const { lang, t } = useLang()
@@ -26,7 +27,14 @@ export default function WorkModal({ openId, onClose }) {
 
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {work.images.slice(1).map((img, idx) => (
-                  <motion.div key={img} initial={{opacity:0, y: 12}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.5, delay: idx*0.05}} className="aspect-[4/3] rounded bg-white border border-black/10"/>
+                  <motion.div key={img} initial={{opacity:0, y: 12}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.5, delay: idx*0.05}} className="aspect-[4/3] rounded overflow-hidden bg-white border border-black/10">
+                    <ImgWithFallback
+                      srcs={[`/work/${work.id}/detail/${img}`, `/work/${work.id}/${img}`]}
+                      alt={`${work.title[lang]} – detail ${idx+1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </motion.div>
                 ))}
               </div>
             </div>
